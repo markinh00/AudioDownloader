@@ -8,13 +8,10 @@ from fastapi.security import APIKeyHeader
 from pytubefix import YouTube
 from starlette import status
 from starlette.exceptions import HTTPException
-import time
-import random
-
 
 load_dotenv()
 
-AUDIO_DIR = "/tmp/audios"
+AUDIO_DIR = os.getenv("AUDIO_DIR")
 
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
@@ -30,10 +27,9 @@ async def get_api_key(X_API_Key: str = Security(api_key_header)):
 
 
 async def get_audio_by_id(video_id):
-    time.sleep(random.uniform(1, 3))
     os.makedirs(AUDIO_DIR, exist_ok=True)
 
-    video = YouTube("https://www.youtube.com/watch?v=" + video_id, use_po_token=True)
+    video = YouTube("https://www.youtube.com/watch?v=" + video_id)
     audio_stream = video.streams.filter(only_audio=True).first()
 
     file_path = os.path.join(AUDIO_DIR, video.video_id)
