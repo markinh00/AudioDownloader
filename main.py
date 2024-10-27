@@ -16,6 +16,11 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+def read_root():
+    return
+
+
 @app.get("/{video_id}", response_class=FileResponse)
 async def get_audio(video_id: str, background_tasks: BackgroundTasks) -> FileResponse:
     try:
@@ -29,6 +34,7 @@ async def get_audio(video_id: str, background_tasks: BackgroundTasks) -> FileRes
         return FileResponse(audio_path, media_type="audio/mpeg", filename=f"{video_id}.mp3")
     except Exception as e:
         raise e
+
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
