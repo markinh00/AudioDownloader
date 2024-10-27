@@ -3,7 +3,7 @@ import os
 
 import aiofiles
 from dotenv import load_dotenv
-from fastapi import Header, Security
+from fastapi import Security
 from fastapi.security import APIKeyHeader
 from pytubefix import YouTube
 from starlette import status
@@ -11,7 +11,7 @@ from starlette.exceptions import HTTPException
 
 load_dotenv()
 
-AUDIO_DIR = os.getenv("AUDIO_DIR")
+AUDIO_DIR = "/tmp/audios"
 
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
