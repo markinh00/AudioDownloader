@@ -25,8 +25,8 @@ if you want to clone and run your own version of the project use the following c
 
 now you need to create a new file qith the name ".env" and add the folowing variables:
 ```bash
-  API_KEY=<YOUR_RANDOM_API_KEY>
-  AUDIO_DIR=<FOLDER_NAME>
+  API_KEY="YOUR_RANDOM_API_KEY"
+  AUDIO_DIR="FOLDER_NAME"
 ```
 
 ### Running the program
