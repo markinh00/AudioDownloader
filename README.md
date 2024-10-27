@@ -23,7 +23,7 @@ if you want to clone and run your own version of the project use the following c
   pip install -r requirements.txt
 ```
 
-now you need to create a new file qith the name ".env" and add the folowing variables:
+now you need to create a new file with the name ".env" and add the folowing variables:
 ```bash
   API_KEY="YOUR_RANDOM_API_KEY"
   AUDIO_DIR="FOLDER_NAME"
