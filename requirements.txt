@@ -3,4 +3,4 @@ starlette~=0.41.0
 aiofiles~=24.1.0
 python-dotenv~=1.0.1
 pytubefix~=8.1.1
-uvicorn
+uvicorn[standard]~=0.32.0
