@@ -33,8 +33,8 @@ async def get_audio_by_id(video_id):
     time.sleep(random.uniform(1, 3))
     os.makedirs(AUDIO_DIR, exist_ok=True)
 
-    video = YouTube("https://www.youtube.com/watch?v=" + video_id)
-    audio_stream = video.streams.filter(only_audio=True).first(use_po_token=True)
+    video = YouTube("https://www.youtube.com/watch?v=" + video_id, use_po_token=True)
+    audio_stream = video.streams.filter(only_audio=True).first()
 
     file_path = os.path.join(AUDIO_DIR, video.video_id)
     mp3_path = os.path.splitext(file_path)[0] + ".mp3"
