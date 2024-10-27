@@ -28,7 +28,7 @@ Now open the project in the IDE of your choice (like vscode or pycharm) and run 
 Now you need to create a new folder on the root of the project with the name ".env" and add the following variables to it:
 ```bash
   API_KEY="YOUR_RANDOM_API_KEY"
-  AUDIO_DIR="FOLDER_NAME"
+  AUDIO_DIR="/tmp/YOUR_ARBITRARY_FOLDER_NAME"
 ```
 
 ### Running the program
