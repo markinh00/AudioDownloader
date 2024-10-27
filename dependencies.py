@@ -3,18 +3,27 @@ import os
 
 import aiofiles
 from dotenv import load_dotenv
+from fastapi import Header, Security
+from fastapi.security import APIKeyHeader
 from pytubefix import YouTube
+from starlette import status
 from starlette.exceptions import HTTPException
 
 load_dotenv()
 
-API_KEY = os.getenv("API_KEY")
 AUDIO_DIR = os.getenv("AUDIO_DIR")
 
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
-def verify_api_key(api_key: str):
-    if api_key != API_KEY:
-        raise HTTPException(status_code=403, detail="invalid API Key.")
+
+async def get_api_key(X_API_Key: str = Security(api_key_header)):
+    if X_API_Key == os.getenv("API_KEY"):
+        return X_API_Key
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Could not validate API KEY"
+        )
 
 
 async def get_audio_by_id(video_id):

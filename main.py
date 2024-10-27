@@ -1,11 +1,11 @@
 from starlette.middleware.cors import CORSMiddleware
-from dependencies import verify_api_key, get_audio_by_id, delete_file
+from dependencies import get_audio_by_id, delete_file, get_api_key
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends
 from starlette.responses import FileResponse
 import uvicorn as uvicorn
 import os
 
-app = FastAPI(dependencies=[Depends(verify_api_key)])
+app = FastAPI(dependencies=[Depends(get_api_key)])
 
 app.add_middleware(
     CORSMiddleware,
