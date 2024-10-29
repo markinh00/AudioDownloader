@@ -1,5 +1,5 @@
 
-# VideoDownloader
+# AudioDownloader
 A small server to download the audio of youtube videos
 
 
