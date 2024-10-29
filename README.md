@@ -10,7 +10,7 @@ If you want to clone and run your own version of the project use the following t
 ### Cloning the repository
 Open the cmd in a desired folder and run the command bellow:
 ```bash
-  git clone https://github.com/markinh00/VideoDownloader
+  git clone https://github.com/markinh00/AudioDownloader
 ```
 Now open the project in the IDE of your choice (like vscode or pycharm) and run the below commands in the terminal:
 ### Creating a virtual environment
