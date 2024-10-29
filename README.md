@@ -3,7 +3,7 @@
 A small server to download the audio of youtube videos
 
 
-## Instalation
+## Installation
 
 If you want to clone and run your own version of the project use the following the instructions for windows:
 
