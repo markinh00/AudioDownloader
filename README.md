@@ -2,9 +2,11 @@
 # AudioDownloader
 A small server to download the audio of youtube videos
 
+## Requirements
+- [python](https://www.python.org/downloads/)
+- [VSCode](https://code.visualstudio.com/) or [Pycharm](https://www.jetbrains.com/pycharm/)
 
 ## Installation
-
 If you want to clone and run your own version of the project use the following the instructions for windows:
 
 ### Cloning the repository
