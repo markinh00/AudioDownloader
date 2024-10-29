@@ -4,3 +4,4 @@ aiofiles~=24.1.0
 python-dotenv~=1.0.1
 pytubefix~=8.1.1
 uvicorn[standard]~=0.32.0
+pydantic~=2.9.2

@@ -1,4 +1,5 @@
 import asyncio
+import base64
 import os
 
 import aiofiles
@@ -27,29 +28,48 @@ async def get_api_key(X_API_Key: str = Security(api_key_header)):
 
 
 async def get_audio_by_id(video_id):
-    os.makedirs(AUDIO_DIR, exist_ok=True)
+    try:
+        os.makedirs(AUDIO_DIR, exist_ok=True)
 
-    video = YouTube("https://www.youtube.com/watch?v=" + video_id)
-    audio_stream = video.streams.filter(only_audio=True).first()
+        video = YouTube("https://www.youtube.com/watch?v=" + video_id)
+        audio_stream = video.streams.filter(only_audio=True).first()
 
-    file_path = os.path.join(AUDIO_DIR, video.video_id)
-    mp3_path = os.path.splitext(file_path)[0] + ".mp3"
+        file_path = os.path.join(AUDIO_DIR, video.video_id)
+        mp3_path = os.path.splitext(file_path)[0] + ".mp3"
 
-    if os.path.exists(mp3_path):
-        os.remove(mp3_path)
+        if os.path.exists(mp3_path):
+            os.remove(mp3_path)
 
-    file_path = audio_stream.download(output_path=AUDIO_DIR, filename=video.video_id)
+        file_path = audio_stream.download(output_path=AUDIO_DIR, filename=video.video_id)
 
-    base, ext = os.path.splitext(file_path)
-    mp3_path = base + ".mp3"
-    os.rename(file_path, mp3_path)
+        base, ext = os.path.splitext(file_path)
+        mp3_path = base + ".mp3"
+        os.rename(file_path, mp3_path)
 
-    while True:
-        async with aiofiles.open(mp3_path, mode='rb') as f:
-            if f:
-                return os.path.relpath(mp3_path)
-        await asyncio.sleep(0.5)
+        while True:
+            async with aiofiles.open(mp3_path, mode='rb') as f:
+                if f:
+                    return os.path.relpath(mp3_path), video.title
+            await asyncio.sleep(0.5)
+    except Exception as e:
+        raise e
+
+
+async def audio_stream_generator(audio_path):
+    async with aiofiles.open(audio_path, mode='rb') as f:
+        while True:
+            chunk = await f.read(1024)
+            if not chunk:
+                break
+            yield chunk
 
 
 def delete_file(file_path: str):
     os.remove(file_path)
+
+
+def mp3_to_base64(audio_path: str) -> str:
+    with open(audio_path, 'rb') as f:
+        audio_encoded = base64.b64encode(f.read())
+
+    return str(audio_encoded)

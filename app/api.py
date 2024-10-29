@@ -2,11 +2,14 @@ import os
 
 from fastapi import FastAPI, Depends, BackgroundTasks, HTTPException
 from starlette.middleware.cors import CORSMiddleware
-from starlette.responses import FileResponse
+from starlette.responses import StreamingResponse
 
-from dependencies import get_api_key, get_audio_by_id, delete_file
+from app.BaseModules.Base64Response import Base64Response
+from dependencies import get_api_key, get_audio_by_id, delete_file, audio_stream_generator, mp3_to_base64
 
-app = FastAPI(dependencies=[Depends(get_api_key)])
+app = FastAPI(
+    dependencies=[Depends(get_api_key)]
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,16 +25,36 @@ def read_root():
     return
 
 
-@app.get("/{video_id}", response_class=FileResponse)
-async def get_audio(video_id: str, background_tasks: BackgroundTasks) -> FileResponse:
+@app.get("/{video_id}", response_class=StreamingResponse)
+async def get_audio(video_id: str, background_tasks: BackgroundTasks) -> StreamingResponse:
     try:
-        audio_path = await get_audio_by_id(video_id)
+        audio_path, _ = await get_audio_by_id(video_id)
 
         if not os.path.exists(audio_path):
-            raise HTTPException(status_code=404, detail="Áudio não encontrado")
+            raise HTTPException(status_code=404, detail="Audio not found")
 
         background_tasks.add_task(delete_file, audio_path)
 
-        return FileResponse(audio_path, media_type="audio/mpeg", filename=f"{video_id}.mp3")
+        return StreamingResponse(
+            audio_stream_generator(audio_path),
+            media_type="audio/mpeg",
+            headers={"Content-Disposition": f"attachment; filename={video_id}.mp3"})
+    except Exception as e:
+        raise e
+
+
+@app.get("/{video_id}/base64")
+async def get_audio(video_id: str, background_tasks: BackgroundTasks) -> Base64Response:
+    try:
+        audio_path, title = await get_audio_by_id(video_id)
+
+        if not os.path.exists(audio_path):
+            raise HTTPException(status_code=404, detail="Audio not found")
+
+        base64_string: str = mp3_to_base64(audio_path)
+
+        background_tasks.add_task(delete_file, audio_path)
+
+        return Base64Response(title=title, file=base64_string)
     except Exception as e:
         raise e
