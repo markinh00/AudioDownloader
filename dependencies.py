@@ -31,7 +31,7 @@ async def get_api_key(X_API_Key: str = Security(api_key_header)):
 async def get_audio_by_id(video_id):
     try:
         if not os.path.exists(AUDIO_DIR):
-            os.makedirs(AUDIO_DIR, exist_ok=True)
+            os.makedirs(AUDIO_DIR)
 
         video = YouTube("https://www.youtube.com/watch?v=" + video_id)
         audio_stream = video.streams.filter(only_audio=True).first()
