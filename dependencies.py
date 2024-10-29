@@ -1,6 +1,7 @@
 import asyncio
 import base64
 import os
+import uuid
 
 import aiofiles
 from dotenv import load_dotenv
@@ -34,22 +35,13 @@ async def get_audio_by_id(video_id):
         video = YouTube("https://www.youtube.com/watch?v=" + video_id)
         audio_stream = video.streams.filter(only_audio=True).first()
 
-        file_path = os.path.join(AUDIO_DIR, video.video_id)
-        mp3_path = os.path.splitext(file_path)[0] + ".mp3"
-
-        if os.path.exists(mp3_path):
-            os.remove(mp3_path)
-
-        file_path = audio_stream.download(output_path=AUDIO_DIR, filename=video.video_id)
-
-        base, ext = os.path.splitext(file_path)
-        mp3_path = base + ".mp3"
-        os.rename(file_path, mp3_path)
+        unique_id = uuid.uuid4().hex
+        file_path = audio_stream.download(output_path=AUDIO_DIR, filename=f"{unique_id}.mp3")
 
         while True:
-            async with aiofiles.open(mp3_path, mode='rb') as f:
+            async with aiofiles.open(file_path, mode='rb') as f:
                 if f:
-                    return os.path.relpath(mp3_path), video.title
+                    return os.path.relpath(file_path), video.title
             await asyncio.sleep(0.5)
     except Exception as e:
         raise e
