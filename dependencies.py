@@ -1,6 +1,5 @@
 import asyncio
 import base64
-import logging
 import os
 import uuid
 
@@ -29,24 +28,10 @@ async def get_api_key(X_API_Key: str = Security(api_key_header)):
         )
 
 
-def create_audio_directory():
-    try:
-        logging.debug(f"Directory path: {AUDIO_DIR}")
-        if not os.path.exists(AUDIO_DIR):
-            os.makedirs(AUDIO_DIR, exist_ok=True)
-            logging.debug(f"Directory {AUDIO_DIR} created successfully.")
-        elif not os.access(AUDIO_DIR, os.W_OK):
-            logging.error(f"Directory {AUDIO_DIR} is not writable.")
-        else:
-            logging.debug(f"Directory {AUDIO_DIR} already exists and is writable.")
-    except OSError as e:
-        logging.error(f"Error creating directory {AUDIO_DIR}: {e}")
-        raise
-
-
 async def get_audio_by_id(video_id):
     try:
-        create_audio_directory()
+        if not os.path.exists(AUDIO_DIR):
+            os.makedirs(AUDIO_DIR)
 
         video = YouTube("https://www.youtube.com/watch?v=" + video_id)
         audio_stream = video.streams.filter(only_audio=True).first()
