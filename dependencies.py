@@ -2,7 +2,6 @@ import asyncio
 import base64
 import os
 import uuid
-
 import aiofiles
 from dotenv import load_dotenv
 from fastapi import Security
@@ -30,14 +29,11 @@ async def get_api_key(X_API_Key: str = Security(api_key_header)):
 
 async def get_audio_by_id(video_id):
     try:
-        if not os.path.exists(AUDIO_DIR):
-            os.makedirs(AUDIO_DIR)
-
         video = YouTube("https://www.youtube.com/watch?v=" + video_id)
         audio_stream = video.streams.filter(only_audio=True).first()
 
         unique_id = uuid.uuid4().hex
-        file_path = audio_stream.download(output_path=AUDIO_DIR, filename=f"{unique_id}.mp3")
+        file_path = audio_stream.download(filename=f"{unique_id}.mp3")
 
         while True:
             async with aiofiles.open(file_path, mode='rb') as f:

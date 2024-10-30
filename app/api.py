@@ -44,17 +44,17 @@ async def get_audio(video_id: str, background_tasks: BackgroundTasks) -> Streami
 
 
 @app.get("/{video_id}/base64")
-async def get_audio(video_id: str, background_tasks: BackgroundTasks) -> Base64Response:
-    try:
-        audio_path, title = await get_audio_by_id(video_id)
+async def get_audio(video_id: str) -> Base64Response:
+    audio_path, title = await get_audio_by_id(video_id)
 
+    try:
         if not os.path.exists(audio_path):
             raise HTTPException(status_code=404, detail="Audio not found")
 
         base64_string: str = mp3_to_base64(audio_path)
 
-        background_tasks.add_task(delete_file, audio_path)
-
         return Base64Response(title=title, file=base64_string)
     except Exception as e:
         raise e
+    finally:
+        os.remove(audio_path)
